@@ -1,3 +1,6 @@
+#ifndef TRAINH
+#define TRAINH
+
 class Train
 {
 	public:
@@ -7,12 +10,16 @@ class Train
 		void setNumIterations(int x);
 		void setEta(double e);
 		void setupW(int inputCols, int targetCols);
+		void doTraining(Matrix &inputs, Matrix &targets);
+
 
 	private:
 		int numIterations;
 		double eta;
+		double transferThreshold;
 		Matrix w = new Matrix;
 
 
 };
 
+#endif

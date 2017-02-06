@@ -30,6 +30,9 @@ int main(int argc, char *argv[])
 
 	// train.normalizeAll(inputs, targets, testDat);
 	train.printAll(inputs, targets, testDat);
+	printf("\n\n\n");
+
+	train.doTraining(inputs, targets);
 
 	// printf("inputs max rows: %d\n", inputs.maxRows());
 

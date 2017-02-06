@@ -1,10 +1,12 @@
 #include "mat.h"
+#include "util.h"
 #include "train.h"
 
 Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
 	eta = 0.25;
 	numIterations = 5;
+	transferThreshold = 0.5;
 
 	normalizeAll(inputs, targets, testDat);
 
@@ -30,11 +32,12 @@ void Train::setupW(int inputCols, int targetCols)
 }
 
 
+
 void Train::normalizeAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
-	inputs.normalize();
+	inputs.normalizeCols();
 	// targets.normalize();
-	testDat.normalize();
+	testDat.normalizeCols();
 }
 
 
@@ -43,6 +46,7 @@ void Train::printAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
 	inputs.print("inputs");
 	targets.print("targets");
 	testDat.print("testDat");
+	w.print("w");
 }
 
 void Train::setNumIterations(int x)
@@ -54,5 +58,31 @@ void Train::setEta(double e)
 {
 	eta = e;
 }
+
+void Train::doTraining(Matrix &inputs, Matrix &targets)
+{
+	for(int i = 0; i < numIterations; i++)
+	{
+		printf("\n\n\niteration: %d\n", i);
+		Matrix activations = new Matrix; //(inputs.maxRows(), targets.maxCols());
+		activations = new Matrix(inputs.dot(w));
+		activations.print("activations0");
+		setTransferThreshold(transferThreshold);
+		activations.map(transferFunc);
+		activations.print("activations1");
+
+		Matrix xT = new Matrix(inputs.transpose());
+		xT.print("xT");
+		Matrix differences = new Matrix(xT.dot(activations.sub(targets)));
+		differences.print("differences");
+
+		differences = differences.scalarMult(eta);
+		differences.print("differences mul'd");
+		w.print("w");
+
+		w = w.sub(differences.scalarMult(eta));
+	}
+}
+
 
 

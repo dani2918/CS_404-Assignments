@@ -21,6 +21,8 @@ class Matrix;
 //
 // class MatrixRowIter
 //
+// Iterator for incrementing through rows in a matrix
+//
 class MatrixRowIter {
 private:
     Matrix *mat;
@@ -47,6 +49,13 @@ public:
 //
 // class Matrix
 //
+// A simple class for matrix operations.   It has some nice debugging features like
+// trying hard to check that the proper dimensions are used.   It is very draconian
+// about this so there is an important different between row vectors and column vectors.
+// I find this helps students get the math to work out correctly if you pay attention to
+// this difference.   The routines allow you to name a matrix.  The name is then used
+// in debug output.   Other things checked include referencing out of bounds.
+//
 class Matrix {
 friend class MatrixRowIter;
 private:
@@ -55,9 +64,11 @@ private:
     double **m;             // the data
     std::string name;       // the name of the matrix or ""
 
+private:  // private methods
+    void allocate(int r, int c, std::string namex);
+
 // constructors
 public:
-    void allocate(int r, int c, std::string namex);
     Matrix(std::string namex="");
     Matrix(int r, int c, std::string namex="");
     Matrix(int r, int c, double *data, std::string namex="");
@@ -65,6 +76,9 @@ public:
     Matrix(Matrix *other);                                     // just for convenience
     ~Matrix();
     Matrix &operator=(const Matrix &other);
+
+// basic error checking support
+public:
     void checkBounds(int r, int c, std::string msg) const;
     void assertDefined(std::string msg) const;
     void assertSquare(std::string msg) const;
@@ -85,6 +99,7 @@ public:
     void narrow(int newc);        // remove columns (without proper deallocation)
     void shorten(int newr);       // remove rows (without proper deallocation)
 
+// operations on matrices
 public: 
     bool equal(const Matrix &other) const;       // are the two matrices equal?
     bool nearEqual(double epsilon, const Matrix &other) const; // matrices nearly equal?
@@ -109,7 +124,7 @@ public:
     Matrix &mult(const Matrix &other);
     Matrix &div(const Matrix &other);
 
-    Matrix &swap(Matrix &other);    // also modifies other
+    Matrix &swap(Matrix &other);    // swaps two matrices so also modifies other
     Matrix &vecDivide(const Matrix &other, double defaultValue);
     Matrix &rowInc(int r);
     Matrix &rowAdd(int r, const Matrix &other);
@@ -127,8 +142,8 @@ public:
     Matrix &subRowVector(const Matrix &other);  // self[r] - other for each row r
     
     // min/max normalization by columns
-    Matrix &normalize();                   // normalize and return array of min and max of each col
-    void normalize(Matrix &minMax);        // normalize based on an array of min and max for each col
+    Matrix &normalizeCols();                   // normalize and return array of min and max of each col
+    void normalizeCols(Matrix &minMax);        // normalize based on an array of min and max for each col
 
     // mapping functions
     Matrix &map(double (*f)(double x));    // apply given function to all elements

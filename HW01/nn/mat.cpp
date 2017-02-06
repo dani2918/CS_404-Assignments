@@ -611,9 +611,10 @@ double Matrix::stddevCol(int c) const
 
 // returns new matrix for a matrix of min and max of each column
 // normalizes within each column according to the min and max in that column
-// overwrites self with the normalized matrix
+// so the range is now between 0 and 1 in each column
+// WARNING: This overwrites self with the normalized matrix.
 // NOTE: it will not rescale a column that is a constant!!
-Matrix &Matrix::normalize()
+Matrix &Matrix::normalizeCols()
 {
     Matrix *minMax;
     double min, max;
@@ -648,13 +649,10 @@ Matrix &Matrix::normalize()
 }
 
 
-// normalizes within each column according to the min and max in that column
-// supplied in the minMax matrix.  Note that minMax is not necessarily the
-// min and max of the columns of this array and works in concert with
-// the normalize that produces a minMax array as a result.
-// overwrites self with the normalized matrix
-// NOTE: it will not rescale a column that is a constant!!
-void Matrix::normalize(Matrix &minMax)
+// normalizes within each column according to the min and max in that
+// column supplied in the minMax matrix.  NOTE: This is used to scale
+// two matrices the same way in the same columns.
+void Matrix::normalizeCols(Matrix &minMax)
 {
     double min, max;
 
@@ -959,7 +957,7 @@ Matrix &Matrix::rowAdd(int r, const Matrix &other)
 }
 
 
-// increment the values in a given row
+// increment the values in a given row by 1
 Matrix &Matrix::rowInc(int r)
 {
     for (int c=0; c<maxc; c++) {
@@ -1986,4 +1984,142 @@ static bool gaussj(double **a, int n, double **b, int m)
 }
 
 
+
+// // // // // // // // // // // // // // // // // // // // // // // // 
+//
+// Some random tests for the matrix code
+//
+
+
+
+// double f(double x) { return (x>10 ? 1.0 : 0.0); };
+
+// double yvalues[] = {2, 3, 5, 7, 11, 13};
+
+// int main()
+// {
+//     Matrix x(10, 20);
+//     Matrix z("dogs");
+//     Matrix y(2, 3, yvalues, "cats");
+//     Matrix a, b;
+
+//     initRand();
+
+//     y.print("matrix y");
+// //    z.print(); // undefined
+// //    x.print("matrix x");  // undefined
+// //    y.dot(y);   // wrong sizes
+    
+//     printf("Supply a 3x3 or larger matrix to read:\n");
+//     x.read();
+
+//     printf("Read Matrix\n");
+//     x.write();
+
+//     a = x.transpose();
+//     printf("Transpose\n");
+//     a.write();
+
+//     a.mult(a);
+//     printf("Squared\n");
+//     a.write();
+
+//     b = a.extract(1, 1, 2, 1);
+//     printf("Extracted\n");
+//     b.write();
+
+//     a.insert(b, 0, 0);
+//     printf("Inserted\n");
+//     a.write();
+
+//     printf("\n");
+//     x.print();
+//     printf("\n");
+//     a.print();
+//     printf("\n");
+//     b.print();
+//     printf("\n");
+
+//     (x.extract(0, 2, 0, 0)).print();
+//     printf("\n");
+
+//     printf("\n");
+//     (x.extract(0, 0, 0, 2)).print();
+//     printf("\n");
+
+//     printf("Map\n");
+//     x.map(f);
+//     x.write();
+//     printf("\n");
+
+//     printf("Random -1.0 to 1.0\n");
+//     x.rand(-1.0, 1.0);
+//     x.write();
+//     printf("\n");
+
+//     printf("Normalize\n");
+//     x.write();
+//     printf("\n");
+//     a = x.normalizeCols();
+//     x.write();
+//     printf("\n");
+//     a.write();
+//     printf("\n");
+//     b.normalizeCols(a);
+//     b.write();
+//     printf("\n");
+
+//     printf("Random -5.0 to 10.0\n");
+//     x.rand(-5.0, 10.0);
+//     x.write();
+//     printf("\n");
+
+//     printf("Random -5 to 10\n");
+//     x.rand(-5, 10);
+//     x.write();
+//     printf("\n");
+
+//     printf("Random 0 to 6\n");
+//     x.rand(0, 6);
+//     printf("X\n");
+//     x.write();
+//     printf("\n");
+
+//     // print b
+//     b = x.transpose();
+//     printf("B\n");
+//     b.write();
+//     printf("\n");
+
+//     // print x . b
+//     printf("X.B\n");
+//     a = x.dot(b);
+//     a.write();
+//     printf("\n");
+
+//     // print b . x
+//     printf("B.X\n");
+//     a = b.dot(x);
+//     a.write();
+
+//     // constant
+//     a.constant(3.14159265);
+//     a.write();
+
+//     {
+//         Matrix m(5, 3);
+
+//         initRand();
+
+//         m.rand(0, 10);
+//         m.print("");
+
+//         MatrixRowIter a(&m);
+//         for (Matrix *i = a.rowBegin(); a.rowNotEnd(); a.rowNext()) {
+//             i->print("");
+//         }
+
+//         return 0;
+//     }
+// }
 

@@ -1,3 +1,7 @@
+#ifndef READFILEH
+#define READFILEH
+
+
 #include <fstream>
 using namespace std;
 class Readfile
@@ -21,3 +25,6 @@ class Readfile
 		double * xArr;
 		double * tArr;
 };
+
+
+#endif
