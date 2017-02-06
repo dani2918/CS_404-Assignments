@@ -5,10 +5,12 @@
 Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
 	eta = 0.25;
-	numIterations = 5;
+	// numIterations = inputs.maxRows();
+	numIterations = 8;
 	transferThreshold = 0.5;
 
 	normalizeAll(inputs, targets, testDat);
+
 
 	Matrix newInputs = new Matrix(inputs.maxRows(), inputs.maxCols()+1);
 	newInputs.insert(inputs, 0, 0);
@@ -37,7 +39,7 @@ void Train::normalizeAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
 	inputs.normalizeCols();
 	// targets.normalize();
-	testDat.normalizeCols();
+	// testDat.normalizeCols();
 }
 
 
@@ -61,27 +63,53 @@ void Train::setEta(double e)
 
 void Train::doTraining(Matrix &inputs, Matrix &targets)
 {
+	double mean;
+	int bestIter = 0;
+	double lowestMean = 99999999999.0;
+	setTransferThreshold(transferThreshold);
+	Matrix xT = new Matrix(inputs.transpose());
 	for(int i = 0; i < numIterations; i++)
 	{
-		printf("\n\n\niteration: %d\n", i);
+		// printf("\n\n\niteration: %d\n", i);
 		Matrix activations = new Matrix; //(inputs.maxRows(), targets.maxCols());
 		activations = new Matrix(inputs.dot(w));
-		activations.print("activations0");
-		setTransferThreshold(transferThreshold);
+		// activations.print("activations0");
+		
 		activations.map(transferFunc);
-		activations.print("activations1");
+		// activations.print("activations1");
 
-		Matrix xT = new Matrix(inputs.transpose());
-		xT.print("xT");
+		
+		// xT.print("xT");
 		Matrix differences = new Matrix(xT.dot(activations.sub(targets)));
-		differences.print("differences");
+		// differences.print("differences");
 
 		differences = differences.scalarMult(eta);
-		differences.print("differences mul'd");
-		w.print("w");
+		// differences.print("differences mul'd");
 
-		w = w.sub(differences.scalarMult(eta));
+		Matrix differencesAbs = new Matrix(differences);
+		differencesAbs.abs();
+		mean = differencesAbs.mean();
+
+		if(mean < lowestMean)
+		{
+			lowestMean = mean;
+			bestW = new Matrix(w, "bestW");
+			bestIter = i;
+		}
+		// w.print("w1");
+		w = w.sub(differences);
+		// w.print("w2");
+		// printf("mean differences: %f\n", mean);
+
+		if(mean < 0.05)
+			break;
 	}
+	// printf("best iter is: %d\n value is: %f\n", bestIter, lowestMean);
+}
+
+Matrix &Train::getW()
+{
+	return bestW;
 }
 
 

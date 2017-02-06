@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "mat.h"
 #include "readfile.h"
 
@@ -31,23 +32,42 @@ Readfile::Readfile()
 void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
 	string line;
+	bool stdin = false;
 	char * space = (char*)" ";
+
+	// If reading from stdin
+	if(passedFile =="")
+	{
+		stdin = true;
+	}
 	
 	singleFile.open(passedFile);
 
 	// First line: number of inputs
-	if(singleFile.is_open())
+	if(singleFile.is_open() && !stdin)
 	{
 		getline(singleFile, line);
 		// printf("%s\n", line.c_str());
 	}
+	else if (stdin)
+	{
+		getline(cin, line);
+	}
+
+
 	numInputs = atoi(line.c_str());
 
 	for(int i = 0; i < 2; i++)
 	{
 		// Get each #rows, #cols pair
-
-		getline(singleFile, line);
+		if(!stdin)
+		{
+			getline(singleFile, line);
+		}
+		else
+		{
+			getline(cin, line);
+		}
 		istringstream irw(line);
 		string tok;
 		getline(irw, tok, ' ');
@@ -69,7 +89,14 @@ void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matr
 		{
 			
 			//Get a line for each row
-			getline(singleFile, line);
+			if(!stdin)
+			{
+				getline(singleFile, line);
+			}
+			else
+			{
+				getline(cin, line);
+			}
 			istringstream irw(line);
 			string tok;
 			for(int j = 0; j < cols; j++)

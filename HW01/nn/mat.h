@@ -163,6 +163,7 @@ public:
     void print(std::string msg="");
     void printSize(std::string msg="");
     void write();
+    void writeFormatted();
     void writeLine(int r);
     void read();
 

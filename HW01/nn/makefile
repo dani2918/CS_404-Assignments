@@ -1,7 +1,7 @@
 BIN  = nn
 CC   = g++
-SRCS = $(BIN).cpp mat.cpp rand.cpp randf.cpp randmt.cpp readfile.cpp train.cpp util.cpp
-OBJS = $(BIN).o mat.o rand.o readfile.o train.o util.o
+SRCS = $(BIN).cpp mat.cpp rand.cpp randf.cpp randmt.cpp readfile.cpp train.cpp util.cpp test.cpp
+OBJS = $(BIN).o mat.o rand.o readfile.o train.o util.o test.o
 LIBS = -lm 
 CCFLAGS = -g -std=c++11 
 
@@ -23,6 +23,9 @@ train.o: train.cpp train.h
 
 util.o: util.cpp util.h
 	$(CC) $(CCFLAGS) -c util.cpp
+
+test.o: test.cpp test.h
+	$(CC) $(CCFLAGS) -c test.cpp
 # randf.o: randf.cpp rand.h
 # 	$(CC) $(CCFLAGS) -c randf.cpp 
 
@@ -38,10 +41,10 @@ clean:
 
 tar:
 	make
-	tar -cvf $(BIN).tar $(SRCS) nn.h rand.h readfile.h train.h util.h makefile 
+	tar -cvf $(BIN).tar $(SRCS) nn.h rand.h mat.h readfile.h train.h util.h test.h makefile 
 
 submit: 
-	curl -F student=daniel -F assignment="CS445 F16 Assignment 7 small" -F "submittedfile=@parser.tar" "http://ec2-52-89-93-46.us-west-2.compute.amazonaws.com/cgi-bin/fileCapture.py"
+	curl -F student=daniel -F assignment="CS504 S17 Assignment 1" -F "submittedfile=@nn.tar" "http://ec2-52-89-93-46.us-west-2.compute.amazonaws.com/cgi-bin/fileCapture.py"
 
 
 

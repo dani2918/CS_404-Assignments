@@ -1510,7 +1510,18 @@ void Matrix::write()
     }
 }
 
+void Matrix::writeFormatted()
+{
+    assertDefined("write");
 
+    // printf("%d %d\n", maxr, maxc);
+    for (int r=0; r<maxr; r++) {
+        for (int c=0; c<maxc; c++) {
+            printf("%.2f ", m[r][c]);
+        }
+        printf("\n");
+    }
+}
 
 
 // this will print a row with a terminal blank but no terminal newline

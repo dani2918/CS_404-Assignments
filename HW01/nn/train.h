@@ -11,6 +11,7 @@ class Train
 		void setEta(double e);
 		void setupW(int inputCols, int targetCols);
 		void doTraining(Matrix &inputs, Matrix &targets);
+		Matrix &getW();
 
 
 	private:
@@ -18,6 +19,7 @@ class Train
 		double eta;
 		double transferThreshold;
 		Matrix w = new Matrix;
+		Matrix bestW = new Matrix;
 
 
 };

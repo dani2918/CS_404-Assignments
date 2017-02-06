@@ -18,5 +18,12 @@ void setTransferThreshold(double x)
 
 double transferFunc(double x)
 {
-	return (x > utilTransferThreshold ? 1.0 : 0.0);
+	if(x > utilTransferThreshold)
+	{
+		return 1.0;
+	}
+	else
+	{
+		return 0.0;
+	}
 }
