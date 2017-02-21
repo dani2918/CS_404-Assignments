@@ -12,27 +12,44 @@ Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat)
 	normalizeAll(inputs, targets, testDat);
 
 
-	Matrix newInputs = new Matrix(inputs.maxRows(), inputs.maxCols()+1);
-	newInputs.insert(inputs, 0, 0);
+	// Matrix newInputs = new Matrix(inputs.maxRows(), inputs.maxCols()+1);
+	// newInputs.insert(inputs, 0, 0);
+	// // newInputs.print();
+
+	// for(int i = 0; i < inputs.maxRows(); i++)
+	// {
+	// 	newInputs.set(i, inputs.maxCols(), -1.0);
+	// }
 	// newInputs.print();
 
-	for(int i = 0; i < inputs.maxRows(); i++)
-	{
-		newInputs.set(i, inputs.maxCols(), -1.0);
-	}
-	// newInputs.print();
+	// inputs = new Matrix(newInputs, "inputs");
 
-	inputs = new Matrix(newInputs, "inputs");
-	setupW(inputs.maxCols(), targets.maxCols());
+	appendBias(inputs, (char*)"inputs");
+	setupWeights(inputs.maxCols(), targets.maxCols());
+
 }
-void Train::setupW(int inputCols, int targetCols)
+void Train::setupWeights(int inputCols, int targetCols)
 {
 	w = new Matrix(inputCols, targetCols, "w");
+	v = new Matrix(inputCols, targetCols, "v");
 	initRand();
 	w.rand(-0.1,0.1);
+	v.rand(-0.1,0.1);
 	// w.print("w");
 }
 
+void Train::appendBias(Matrix &m, char * name)
+{
+	Matrix newInputs = new Matrix(m.maxRows(), m.maxCols()+1);
+	newInputs.insert(m, 0, 0);
+	// newInputs.print();
+
+	for(int i = 0; i < m.maxRows(); i++)
+	{
+		newInputs.set(i, m.maxCols(), -1.0);
+	}
+	m = new Matrix(newInputs, name);
+}
 
 
 void Train::normalizeAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
@@ -49,6 +66,7 @@ void Train::printAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
 	targets.print("targets");
 	testDat.print("testDat");
 	w.print("w");
+	v.print("v");
 }
 
 void Train::setNumIterations(int x)
@@ -64,17 +82,21 @@ void Train::setEta(double e)
 void Train::doTraining(Matrix &inputs, Matrix &targets)
 {
 	double mean;
+	double beta = 20.0;
 	int bestIter = 0;
 	double lowestMean = 99999999999.0;
 	setTransferThreshold(transferThreshold);
+	setSlope(beta);
 	Matrix xT = new Matrix(inputs.transpose());
 	for(int i = 0; i < numIterations; i++)
 	{
 		// printf("\n\n\niteration: %d\n", i);
-		Matrix activations = new Matrix; //(inputs.maxRows(), targets.maxCols());
-		activations = new Matrix(inputs.dot(w));
+
+		/* ------------- Forward  ----------------*/
+		Matrix activations = new Matrix; 
+		activations = new Matrix(inputs.dot(v));
 		// activations.print("activations0");
-		
+
 		activations.map(transferFunc);
 		// activations.print("activations1");
 
@@ -110,6 +132,11 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 Matrix &Train::getW()
 {
 	return bestW;
+}
+
+Matrix &Train::getV()
+{
+	return bestV;
 }
 
 
