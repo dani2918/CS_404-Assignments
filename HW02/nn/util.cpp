@@ -25,8 +25,7 @@ void setSlope(double x)
 
 double transferFunc(double x)
 {
-	double tf = 1/(1+exp(-4 * slope * x));
-	return tf;
+	return 1/(1+exp(-4 * slope * x));
 }
 
 // {

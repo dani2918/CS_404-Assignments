@@ -15,6 +15,7 @@ class Readfile
 		// void parseData();
 		void initArr();
 		void deleteArr();
+		int getNumHiddenNodes();
 		// char * split(char * orig, char * token);
 
 	private:

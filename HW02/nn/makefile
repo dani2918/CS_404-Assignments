@@ -44,7 +44,7 @@ tar:
 	tar -cvf $(BIN).tar $(SRCS) nn.h rand.h mat.h readfile.h train.h util.h test.h makefile 
 
 submit: 
-	curl -F student=daniel -F assignment="CS504 S17 Assignment 1" -F "submittedfile=@nn.tar" "http://ec2-52-89-93-46.us-west-2.compute.amazonaws.com/cgi-bin/fileCapture.py"
+	curl -F student=daniel -F assignment="CS504 S17 Assignment 2" -F "submittedfile=@nn.tar" "http://ec2-52-89-93-46.us-west-2.compute.amazonaws.com/cgi-bin/fileCapture.py"
 
 
 

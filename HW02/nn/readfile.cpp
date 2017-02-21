@@ -32,6 +32,7 @@ Readfile::Readfile()
 
 void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
+	numHiddenNodes = 1;
 	string line;
 	bool stdin = false;
 	char * space = (char*)" ";
@@ -70,12 +71,20 @@ void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matr
 		}
 		numHiddenNodes = atoi(line.c_str());
 	}	
-
+	
 	
 
 	for(int i = 0; i < 2; i++)
 	{
 		// Get each #rows, #cols pair
+		if(!stdin)
+		{
+			getline(singleFile, line);
+		}
+		else
+		{
+			getline(cin, line);
+		}
 		
 		istringstream irw(line);
 		string tok;
@@ -84,10 +93,9 @@ void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matr
 		getline(irw, tok, '\n');
 		cols = stoi(tok);
 
-		printf("numInputs is: %d\n", numInputs);
-		printf("NUM HIDDEN IS: %d\n", numHiddenNodes);
-		printf("rows: %d\t", rows);
-		printf("cols: %d\n", cols);
+		// printf("numInputs is: %d\n", numInputs);
+		// printf("rows: %d\t", rows);
+		// printf("cols: %d\n", cols);
 
 
 		int xArrCount = 0;
@@ -143,10 +151,7 @@ void Readfile::readData(string passedFile, Matrix &inputs, Matrix &targets, Matr
 			testDat = new Matrix(rows, numInputs, xArr, "testDat"); 
 			// testDat.print();
 		}
-
 		deleteArr();
-		
-
 	}
 
 
@@ -165,6 +170,11 @@ void Readfile::deleteArr()
 	
 	delete[] xArr;
 	delete[] tArr;
+}
+
+int Readfile::getNumHiddenNodes()
+{
+	return numHiddenNodes;
 }
 
 

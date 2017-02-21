@@ -2,12 +2,13 @@
 #include "util.h"
 #include "train.h"
 
-Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat)
+Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat, int nhn)
 {
-	eta = 0.25;
+	eta = 0.1;
 	// numIterations = inputs.maxRows();
-	numIterations = 200;
-	transferThreshold = 0.5;
+	numIterations = 10000;
+	transferThreshold = 0.0;
+	numHiddenNodes = nhn;
 
 	normalizeAll(inputs, targets, testDat);
 
@@ -30,8 +31,8 @@ Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat)
 }
 void Train::setupWeights(int inputCols, int targetCols)
 {
-	w = new Matrix(inputCols, targetCols, "w");
-	v = new Matrix(inputCols, targetCols, "v");
+	v = new Matrix(inputCols, numHiddenNodes, "v");
+	w = new Matrix(numHiddenNodes + 1, targetCols, "w");
 	initRand();
 	w.rand(-0.1,0.1);
 	v.rand(-0.1,0.1);
@@ -55,7 +56,7 @@ void Train::appendBias(Matrix &m, char * name)
 void Train::normalizeAll(Matrix &inputs, Matrix &targets, Matrix &testDat)
 {
 	inputs.normalizeCols();
-	// targets.normalize();
+	// targets.normalizeCols();
 	// testDat.normalizeCols();
 }
 
@@ -87,46 +88,129 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 	double lowestMean = 99999999999.0;
 	setTransferThreshold(transferThreshold);
 	setSlope(beta);
+	Matrix x = new Matrix(inputs);
 	Matrix xT = new Matrix(inputs.transpose());
+	Matrix y = new Matrix();
 	for(int i = 0; i < numIterations; i++)
 	{
 		// printf("\n\n\niteration: %d\n", i);
 
 		/* ------------- Forward  ----------------*/
-		Matrix activations = new Matrix; 
-		activations = new Matrix(inputs.dot(v));
-		// activations.print("activations0");
+		// v.print();
+		Matrix h = new Matrix(x.dot(v));
+		h.map(transferFunc);
+		appendBias(h, (char*)"h");
+		// h.print();
 
-		activations.map(transferFunc);
-		// activations.print("activations1");
+		Matrix usableH = new Matrix(h);
+		y = new Matrix(usableH.dot(w));
+		y.map(transferFunc);
+		// y.print("Y");
 
-		
-		// xT.print("xT");
-		Matrix differences = new Matrix(xT.dot(activations.sub(targets)));
-		// differences.print("differences");
 
-		differences = differences.scalarMult(eta);
-		// differences.print("differences mul'd");
+		/* ------------- Backward  ----------------*/
 
-		Matrix differencesAbs = new Matrix(differences);
-		differencesAbs.abs();
-		mean = differencesAbs.mean();
+		// Save original y, h so we don't mutate below
+		Matrix usableY = new Matrix(y);
+		usableH = new Matrix(h);
 
-		if(mean < lowestMean)
+		// resetting usabley just in case
+		Matrix dy = new Matrix(usableY.sub(targets));
+		usableY = new Matrix(y);
+		dy = dy.mult(usableY);
+		usableY = new Matrix(y);
+		dy = dy.mult(usableY.scalarPreSub(1.0));
+		// dy.print("DY");
+
+		Matrix dh = new Matrix(usableH);
+		usableH = new Matrix(h);
+		dh = dh.mult(usableH.scalarPreSub(1.0));
+
+		Matrix usableW = new Matrix(w);
+		Matrix wt = new Matrix(usableW.transpose());
+		Matrix usableDy = new Matrix(dy);
+		dh = dh.mult(usableDy.dot(wt));
+
+		// dh.print("DH");
+
+
+		// Matrix differencesAbs = new Matrix(dy);
+		// differencesAbs.abs();
+		double dist = sqrt(y.dist2(targets));
+		// mean = differencesAbs.mean();
+
+		if(dist < lowestMean)
 		{
-			lowestMean = mean;
+			lowestMean = dist;
 			bestW = new Matrix(w, "bestW");
+			bestV = new Matrix(v, "bestV");
 			bestIter = i;
 		}
-		// w.print("w1");
-		w = w.sub(differences);
-		// w.print("w2");
-		// printf("mean differences: %f\n", mean);
 
-		if(mean < 0.05)
-			break;
+
+		/* ------------- Update  ----------------*/
+		Matrix ht = new Matrix(h.transpose());
+		Matrix differences = new Matrix(ht.dot(dy));
+		differences = differences.scalarMult(eta);
+		w = w.sub(differences);
+
+		dh.narrow(dh.maxCols()-1);
+
+		xT = new Matrix(x.transpose());
+		differences = new Matrix(xT.dot(dh));
+		differences = differences.scalarMult(eta);
+		v = v.sub(differences);
+
+
+		// xT.print("xT");
+		// Matrix differences = new Matrix(xT.dot(activations.sub(targets)));
+		// // differences.print("differences");
+
+		// differences = differences.scalarMult(eta);
+		// // differences.print("differences mul'd");
+
+		// Matrix differencesAbs = new Matrix(differences);
+		// differencesAbs.abs();
+		// mean = differencesAbs.mean();
+
+		// if(mean < lowestMean)
+		// {
+		// 	lowestMean = mean;
+		// 	bestW = new Matrix(w, "bestW");
+		// 	bestV = new Matrix(v, "bestV");
+		// 	bestIter = i;
+		// }
+
+		// printf(" iter is: %d\n value is: %f\n", bestIter, lowestMean);
+		// // w.print("w1");
+		// w = w.sub(differences);
+		// // w.print("w2");
+		// // printf("mean differences: %f\n", mean);
+
+		// if(mean < 0.05)
+		// 	break;
 	}
-	// printf("best iter is: %d\n value is: %f\n", bestIter, lowestMean);
+	// printf("DONE\n");
+	printf("best iter is: %d\n value is: %f\n", bestIter, lowestMean);
+
+	// bestV = new Matrix(v);
+	// bestW = new Matrix(w);
+		Matrix saveY = new Matrix(y);
+
+
+		Matrix h = new Matrix(inputs.dot(bestV));
+		h.map(transferFunc);
+		appendBias(h, (char*)"h");
+		// h.print();
+
+		
+		y = new Matrix(h.dot(bestW));
+		y.map(transferFunc);
+		y.print("BEST Y");
+		saveY.print("FINAL Y");
+
+
+		// targets.print("TARGETS");
 }
 
 Matrix &Train::getW()
@@ -137,6 +221,11 @@ Matrix &Train::getW()
 Matrix &Train::getV()
 {
 	return bestV;
+}
+
+void Train::setNumHiddenNodes(int n)
+{
+	numHiddenNodes = n;
 }
 
 

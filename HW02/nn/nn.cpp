@@ -31,8 +31,9 @@ int main(int argc, char *argv[])
 	{
 		printf("Error - Usage: '$./nn filename'\n");
 	}
+	int numHiddenNodes = rf.getNumHiddenNodes();
 
-	Train train(inputs,targets,testDat);
+	Train train(inputs,targets,testDat, numHiddenNodes);
 
 	// train.normalizeAll(inputs, targets, testDat);
 	// train.printAll(inputs, targets, testDat);
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
 	train.doTraining(inputs, targets);
 	// train.getW().print("TESTING");
 
-	Test test(testDat, train.getW());
+	Test test(testDat, train.getV(), train.getW(), targets, inputs);
 
 	// printf("inputs max rows: %d\n", inputs.maxRows());
 
