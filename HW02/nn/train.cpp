@@ -6,7 +6,7 @@ Train::Train(Matrix &inputs, Matrix &targets, Matrix &testDat, int nhn)
 {
 	eta = 0.1;
 	// numIterations = inputs.maxRows();
-	numIterations = 10000;
+	numIterations = 30000;
 	transferThreshold = 0.0;
 	numHiddenNodes = nhn;
 
@@ -83,12 +83,13 @@ void Train::setEta(double e)
 void Train::doTraining(Matrix &inputs, Matrix &targets)
 {
 	double mean;
-	double beta = 20.0;
+	double beta = 1;
 	int bestIter = 0;
 	double lowestMean = 99999999999.0;
 	setTransferThreshold(transferThreshold);
 	setSlope(beta);
 	Matrix x = new Matrix(inputs);
+	// x.print();
 	Matrix xT = new Matrix(inputs.transpose());
 	Matrix y = new Matrix();
 	for(int i = 0; i < numIterations; i++)
@@ -100,7 +101,7 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		Matrix h = new Matrix(x.dot(v));
 		h.map(transferFunc);
 		appendBias(h, (char*)"h");
-		// h.print();
+		// h.print("H");
 
 		Matrix usableH = new Matrix(h);
 		y = new Matrix(usableH.dot(w));
@@ -117,19 +118,19 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		// resetting usabley just in case
 		Matrix dy = new Matrix(usableY.sub(targets));
 		usableY = new Matrix(y);
-		dy = dy.mult(usableY);
+		dy.mult(usableY);
 		usableY = new Matrix(y);
-		dy = dy.mult(usableY.scalarPreSub(1.0));
+		dy.mult(usableY.scalarPreSub(1.0));
 		// dy.print("DY");
 
 		Matrix dh = new Matrix(usableH);
 		usableH = new Matrix(h);
-		dh = dh.mult(usableH.scalarPreSub(1.0));
+		dh.mult(usableH.scalarPreSub(1.0));
 
 		Matrix usableW = new Matrix(w);
 		Matrix wt = new Matrix(usableW.transpose());
 		Matrix usableDy = new Matrix(dy);
-		dh = dh.mult(usableDy.dot(wt));
+		dh.mult(usableDy.dot(wt));
 
 		// dh.print("DH");
 
@@ -139,8 +140,14 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		double dist = sqrt(y.dist2(targets));
 		// mean = differencesAbs.mean();
 
+		// if(i % 500 == 0)
+		// {
+		// 	printf("i is: %d   lowest dist is: %f\n",i,lowestMean);
+		// }
+
 		if(dist < lowestMean)
 		{
+			
 			lowestMean = dist;
 			bestW = new Matrix(w, "bestW");
 			bestV = new Matrix(v, "bestV");
@@ -191,7 +198,7 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		// 	break;
 	}
 	// printf("DONE\n");
-	printf("best iter is: %d\n value is: %f\n", bestIter, lowestMean);
+	// printf("best iter is: %d\n value is: %f\n", bestIter, lowestMean);
 
 	// bestV = new Matrix(v);
 	// bestW = new Matrix(w);
@@ -206,8 +213,8 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		
 		y = new Matrix(h.dot(bestW));
 		y.map(transferFunc);
-		y.print("BEST Y");
-		saveY.print("FINAL Y");
+		// y.print("BEST Y");
+		// saveY.print("FINAL Y");
 
 
 		// targets.print("TARGETS");

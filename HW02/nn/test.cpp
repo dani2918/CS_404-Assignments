@@ -16,8 +16,8 @@ Test::Test(Matrix &testDat, Matrix &passedV, Matrix &passedW, Matrix &tar, Matri
 	v = new Matrix(passedV, "v");
 	w = new Matrix(passedW, "w");
 	// w.print();
+	inputs = new Matrix(i);
 	targets = new Matrix(tar);
-	inputs = new Matrix(i,"x");
 	runTest(testDat, testDatWBias);
 
 }
@@ -55,6 +55,7 @@ void Test::runTest(Matrix &testDat, Matrix &testDatWBias)
 	// testOutput.print("td");
 
 	printf("BEGIN TESTING\n");
+	inputs.setName("x");
 	inputs.print("input normalized");
 	testDat.setName("out");
 	testDat.print();
