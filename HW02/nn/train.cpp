@@ -146,8 +146,7 @@ void Train::doTraining(Matrix &inputs, Matrix &targets)
 		// }
 
 		if(dist < lowestMean)
-		{
-			
+		{	
 			lowestMean = dist;
 			bestW = new Matrix(w, "bestW");
 			bestV = new Matrix(v, "bestV");
