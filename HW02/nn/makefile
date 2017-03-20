@@ -3,7 +3,7 @@ CC   = g++
 SRCS = $(BIN).cpp mat.cpp rand.cpp randf.cpp randmt.cpp readfile.cpp train.cpp util.cpp test.cpp
 OBJS = $(BIN).o mat.o rand.o readfile.o train.o util.o test.o
 LIBS = -lm 
-CCFLAGS = -g -std=c++11 
+CCFLAGS = -g -std=c++11
 
 
 $(BIN): $(OBJS)

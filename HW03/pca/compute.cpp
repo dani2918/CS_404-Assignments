@@ -21,13 +21,6 @@ void Compute::calcZ(Matrix &x)
         stddev.set(0, i, s);
         // printf("mean: %f, stddev: %f\n", m, s);
     }
-
-    // Translate to z score, return that matrix
-    // x[row] = x[row] - mean/stddev()
-    // mean.print();
-    // stddev.print();
-    // Matrix z = mean.div(stddev);
-
     // z.print();
     x = x.subRowVector(mean);
     x = x.divRowVector(stddev);
@@ -89,9 +82,7 @@ void Compute::component()
     }
     // origV.print();
     // w.print();
-
     w = w.transpose();
     origV.multColVector(w);
     origV.print("Component Matrix");
-
 }

@@ -2,6 +2,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 #include "mat.h"
 #include "readfile.h"
 
@@ -64,7 +66,6 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 	// printf("rows: %d\t", rows);
 	// printf("cols: %d\n", cols);
 
-
 	int xArrCount = 0;
 	initArr();
 
@@ -87,15 +88,11 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 		for(int j = 0; j < cols; j++)
 		{
 			getline(irw, tok, ' ');
-			try
-			{
-				xArr[xArrCount] = stod(tok);
-			}
-			// Scrub extra leading space?
-			catch(std::exception& e)
+			while(strcmp(tok.c_str(), "") == 0)
 			{
 				getline(irw, tok, ' ');
 			}
+			xArr[xArrCount] = stod(tok);
 			xArrCount++;
 		}
 	}

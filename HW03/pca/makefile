@@ -1,10 +1,9 @@
 BIN  = pca
 CC   = g++
-SRCS = $(BIN).cpp mat.cpp rand.cpp randf.cpp randmt.cpp readfile.cpp compute.cpp
-# train.cpp util.cpp test.cpp
+SRCS = $(BIN).cpp mat.cpp rand.cpp readfile.cpp compute.cpp
 OBJS = $(BIN).o mat.o rand.o readfile.o compute.o
 LIBS = -lm
-CCFLAGS = -g -std=c++11
+CCFLAGS = -g -std=c++11 
 
 
 $(BIN): $(OBJS)
@@ -21,11 +20,6 @@ readfile.o: readfile.cpp readfile.h
 
 compute.o: compute.cpp compute.h
 	$(CC) $(CCFLAGS) -c compute.cpp
-# randf.o: randf.cpp rand.h
-# 	$(CC) $(CCFLAGS) -c randf.cpp
-
-# randmt.o: randmt.cpp rand.h
-# 	$(CC) $(CCFLAGS) -c randmt.cpp
 
 all:
 	touch $(SRCS)
