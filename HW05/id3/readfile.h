@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <vector>
+#include <map>
 using namespace std;
 class Readfile
 {
@@ -23,7 +24,9 @@ class Readfile
 		int rows;
 		int cols;
 		double * xArr;
-		vector< vector<string> > v;
+		vector< map<int, string>> strmap;
+		string feature;
+		int numValues;
 };
 
 
