@@ -43,7 +43,7 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 	getline(irw, tok, ' ');
 	numFeatures = stoi(tok);
 
-	cout << "num features: " << numFeatures << endl;
+	// cout << "num features: " << numFeatures << endl;
 	for(int i = 0; i <= numFeatures; i++)
 	{
 		if(!stdin)
@@ -57,86 +57,76 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 		istringstream rowcol(line);
 		rowcol >> tok;
 		feature = tok;
-		cout << "feature: " << feature << endl;
+		// cout << "feature: " << feature << endl;
+		features.push_back(feature);
 		rowcol >> tok;
 		numValues = stoi(tok);
-		cout << "num Values: " << numValues << endl;
+		// cout << "num Values: " << numValues << endl;
 
-		map <int, string> tmp;
+		map <string, int> tmp;
 		for (int j = 0; j < numValues; j++)
 		{
 			rowcol >> tok;
-			tmp[j] = tok;
+			tmp[tok] = j;
 		}
 		strmap.push_back(tmp);
-		for (auto elem: tmp)
-		{
-			cout << elem.first << ": " << elem.second << "  ";
-		}
-		printf("\n");
+		// for (auto elem: tmp)
+		// {
+		// 	cout << elem.first << ": " << elem.second << "  ";
+		// }
+		// printf("\n");
 	}
 
+	cols = numFeatures + 1;
+	if(!stdin)
+	{
+		getline(singleFile, line);
+	}
+	else
+	{
+		getline(cin, line);
+	}
+	istringstream rowcol(line);
+	rowcol >> rows;
 
-	// getline(irw, tok, '\n');
-	// timesComputed = stoi(tok);
+	printf("rows: %d, cols: %d\n",rows, cols );
 
-	//First & Second inputs, same line
-	// printf("kgrps is: %d\n", kExpGrps);
+	int xArrCount = 0;
+	initArr();
+	for(int i = 0; i < rows; i++)
+	{
+		//Get a line for each row
+		if(!stdin)
+		{
+			getline(singleFile, line);
+		}
+		else
+		{
+			getline(cin, line);
+		}
 
-	// Get each #rows, #cols pair
-	// if(!stdin)
+		istringstream irw(line);
+		string tok;
+
+		for(int j = 0; j < cols; j++)
+		{
+			irw >> tok;
+			// cout << tok << "";
+			int code = strmap[j][tok];
+			// cout << code << " ";
+			xArr[xArrCount] = code;
+			xArrCount++;
+		}
+		// cout << endl;
+	}
+	//
+	x = new Matrix(rows, cols, xArr, "x");
+	// x.print();
+	deleteArr();
+	// for (auto m : features)
 	// {
-	// 	getline(singleFile, line);
+	// 	cout << m << endl;
 	// }
-	// else
-	// {
-	// 	getline(cin, line);
-	// }
-	//
-	// istringstream rowcol(line);
-	// getline(rowcol, tok, ' ');
-	// rows = stoi(tok);
-	// getline(rowcol, tok, '\n');
-	// cols = stoi(tok);
-
-	// printf("rows: %d\t", rows);
-	// printf("cols: %d\n", cols);
-
-	// int xArrCount = 0;
-	// initArr();
-	// for(int i = 0; i < rows; i++)
-	// {
-	// 	//Get a line for each row
-	// 	if(!stdin)
-	// 	{
-	// 		getline(singleFile, line);
-	// 	}
-	// 	else
-	// 	{
-	// 		getline(cin, line);
-	// 	}
-	//
-	// 	istringstream irw(line);
-	// 	string tok;
-	//
-	// 	for(int j = 0; j < cols; j++)
-	// 	{
-	// 		getline(irw, tok, ' ');
-	// 		while(strcmp(tok.c_str(), "") == 0)
-	// 		{
-	// 			getline(irw, tok, ' ');
-	// 		}
-	// 		xArr[xArrCount] = stod(tok);
-	// 		xArrCount++;
-	// 	}
-	// }
-	//
-	// x = new Matrix(rows, cols, xArr, "x");
-	// // x.print();
-	// // k = kExpGrps;
-	//
-	//
-	// deleteArr();
 }
 
 

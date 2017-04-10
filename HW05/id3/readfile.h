@@ -24,8 +24,9 @@ class Readfile
 		int rows;
 		int cols;
 		double * xArr;
-		vector< map<int, string>> strmap;
+		vector< map<string, int>> strmap;
 		string feature;
+		vector<string> features;
 		int numValues;
 };
 

@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 	Matrix x = Matrix();
 	int k = 0;
 
-
 	Readfile rf;
 
 	if(argc == 2)
@@ -26,14 +25,13 @@ int main(int argc, char *argv[])
 	{
 		rf.readData("", x, k);
 	}
-	// else
-	// {
-	// 	printf("Error - Usage: '$./kmeans filename'\n");
-	// }
+	else
+	{
+		printf("Error - Usage: '$./id3 < filename \n");
+	}
 	// Compute compute(k);
 	// Matrix km = Matrix(compute.kMeansTrain(x, 0));
 	// km.setName("points");
 	// km.print();
-
 	return 0;
 }
