@@ -42,15 +42,19 @@ Tree * Compute::constructTree(Matrix &x,  int * &finishedCols, int depth)
     getGain(x, gain, finishedCols);
 
     double bestGain = -99999999999;
-    int bestFeature = 0;
+    int bestFeature = -1;
+
     for (int i = 0; i < numFeatures; i++)
     {
+        // cout << finishedCols[i] << " ";
         if(gain[i] > bestGain)
         {
             bestFeature = i;
             bestGain = gain[i];
         }
     }
+    // cout << endl;
+
     // cout << "\nBest feature: " << names[bestFeature]  << endl;
     // printf("bestgain: %f\n", bestGain);
 
@@ -59,18 +63,9 @@ Tree * Compute::constructTree(Matrix &x,  int * &finishedCols, int depth)
     Matrix subcpy;
     Matrix sub;
     Matrix subDownCol;
-    bool noFeatures = true;
-    for(int i = 0; i < x.maxCols() - 1; i++)
-    {
-        // cout << finishedCols[i] << " ";
-        if(finishedCols[i] != 1)
-        {
-            noFeatures = false;
-        }
-    }
+
     // cout << endl;
 
-    finishedCols[bestFeature] = 1;
 
     for (auto m : strmap[bestFeature])
     {
@@ -82,25 +77,56 @@ Tree * Compute::constructTree(Matrix &x,  int * &finishedCols, int depth)
         // cout << "DEPTH: " << depth << endl;
         string val;
 
+        bool noFeatures = true;
+        // for(int i = 0; i < x.maxCols() - 1; i++)
+        // {
+        //     // cout << finishedCols[i] << " ";
+        //     if(finishedCols[i] != 1)
+        //     {
+        //         noFeatures = false;
+        //     }
+        //
+        // }
+        // finishedCols[bestFeature] = 1;
+        // cout << "depth: " <<depth << " nf: " << numFeatures << endl;
         if(onlyOneAns(sub, val))
         {
             // printf("ONLY ONE ANSWER\n\n");
             t->addChild(m.second, new Tree(val));
         }
-        else if(noFeatures)
+        else if(allSame (x, bestFeature))
+        {
+            // cout <<"BF IS: " << bestFeature << endl;
+            if(depth >= numFeatures)
+            {
+                string s;
+                s = getMostCommon(sub);
+                // sub.print();
+                // cout << s << endl;
+                return new Tree(s);
+            }
+            // x.print();
+            finishedCols[bestFeature] = 1;
+            t = constructTree(x, finishedCols,++depth);
+            return t;
+        }
+        else if(depth >= numFeatures)
         {
             string s;
             s = getMostCommon(sub);
+            // sub.print();
             t->addChild(m.second, new Tree(s));
             // x.print();
-            printf("no features: %s\n",s.c_str() );
+            // cout <<"No features: " << s << " m.second: "<< m.second << endl;
         }
+
         else
         {
             t->addChild(m.second, constructTree(sub, finishedCols,++depth));
+            finishedCols[bestFeature] = 0;
         }
     }
-
+    finishedCols[bestFeature] = 1;
     return t;
 }
 void Compute::getGain(Matrix &x, double * &gain, int * &finishedCols)
@@ -208,7 +234,7 @@ void Compute::getGain(Matrix &x, double * &gain, int * &finishedCols)
             // gainSum += double(featCounts[k]) / double(numFeatures) * entropy;
         }
         gain[i] = entropy - gainSum;
-        // printf("gain is: %f\n", gain[i]);
+        // printf("gain is: %f, i: %d\n", gain[i], i);
 
 
         // printf("\n\n");
@@ -227,7 +253,7 @@ double Compute::calcEntropy(double p)
     }
 }
 
-bool Compute::onlyOneAns(Matrix x, string &val)
+bool Compute::onlyOneAns(Matrix x,  string &val)
 {
     double tst;
 
@@ -287,6 +313,17 @@ string Compute::getMostCommon(Matrix x)
     // cout << "best is: " << best <<endl;
     return  strmap[numFeatures][best];
 }
-// def calc_entropy(self,p):
-//     if p!=0:
-//         return -p * np.log2(p)
+
+bool Compute::allSame(Matrix x, int col)
+{
+    double first = x.get(0, col);
+    for (int i = 0; i < x.numRows(); i++)
+    {
+        // cout << x.get(i,col) << endl;
+        if (first != x.get(i,col))
+        {
+            return false;
+        }
+    }
+    return true;
+}

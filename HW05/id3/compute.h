@@ -18,6 +18,7 @@ private:
     bool onlyOneAns(Matrix x, string &val);
     int numFeatures;
     string getMostCommon(Matrix x);
+    bool allSame(Matrix x, int col);
     // Matrix stddev;
     // Matrix m;
     // Matrix v;
