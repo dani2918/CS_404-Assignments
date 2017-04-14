@@ -13,7 +13,8 @@ class Readfile
 		Readfile();
 		// ~readfile();
 
-		void readData(string passedFile, Matrix &x, int &k);
+		void readData(string passedFile, Matrix &x, int &k,
+			vector<string> &names, vector< map<int, string>> &mp);
 		// void parseData();
 		void initArr();
 		void deleteArr();
@@ -27,6 +28,7 @@ class Readfile
 		vector< map<string, int>> strmap;
 		string feature;
 		vector<string> features;
+		vector<map<int, string>> reverse;
 		int numValues;
 };
 

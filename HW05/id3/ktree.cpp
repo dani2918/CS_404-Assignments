@@ -29,6 +29,7 @@ Tree::Tree(std::string n, std::string leftn, Tree *leftc, std::string rightn, Tr
 // destructor (none at the moment)
 Tree::~Tree()
 {
+    // delete Tree;
 }
 
 // add a node supplied as a pointer as a child and name the edge
@@ -99,7 +100,7 @@ void Tree::printAux(bool edge, int level)
 
 
 /*
-// // // // // // // // // // // // // // // // 
+// // // // // // // // // // // // // // // //
 //
 // main for testing
 //

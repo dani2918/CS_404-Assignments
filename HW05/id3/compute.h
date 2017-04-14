@@ -1,25 +1,28 @@
 #ifndef COMPUTEH
 #define COMPUTEH
-
+#include "ktree.h"
+using namespace std;
 class Compute
 {
 public:
-    Compute(int x);
-    Matrix kMeansTrain(Matrix &points, int depth);
-    // void covariance(Matrix &x);
-    // void eigen(Matrix &x);
-    // void translate(Matrix &x);
-    void component();
-    // void initalize(Matrix &c, Matrix &oc, Matrix &d);
+    Compute(Matrix &x, vector<string> n, vector< map<int, string> > &mp);
+
 
 private:
-    Matrix centers;
+    void getGain(Matrix &x, double * &gain, int * &finishedCols);
+    Tree * constructTree(Matrix &x, int * &finishedCols, int depth);
+    double calcEntropy(double p);
+    vector<string> names;
+    vector< map<int, string> > strmap;
+    int numAns;
+    bool onlyOneAns(Matrix x, string &val);
+    int numFeatures;
+    string getMostCommon(Matrix x);
     // Matrix stddev;
     // Matrix m;
     // Matrix v;
     // Matrix origV;
     // Matrix w;
-    int k;
 };
 
 #endif

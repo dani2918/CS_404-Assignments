@@ -3,10 +3,10 @@
 #include <vector>
 #include <string>
 
-// // // // // // // // // // // // // // // // // // // // 
-// 
+// // // // // // // // // // // // // // // // // // // //
+//
 // Class Tree: super simple tree class with labeled nodes and edges.
-// 
+//
 class Tree {
 private:
     std::string name;
@@ -22,7 +22,7 @@ public:
     ~Tree();
 
 private:
-    void printAux(bool edge, int level);                  
+    void printAux(bool edge, int level);
 
 public:
     bool isLeaf() { return children.size()==0; }                          // is this a leaf (no children)

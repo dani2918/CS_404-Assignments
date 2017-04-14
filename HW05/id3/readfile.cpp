@@ -17,7 +17,8 @@ Readfile::Readfile()
 }
 
 
-void Readfile::readData(string passedFile, Matrix &x, int &k)
+void Readfile::readData(string passedFile, Matrix &x, int &k, vector<string> &names,
+vector< map<int, string>> &mp)
 {
 	string line;
 	bool stdin = false;
@@ -69,12 +70,15 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 		// cout << "num Values: " << numValues << endl;
 
 		map <string, int> tmp;
+		map<int, string> tmpRev;
 		for (int j = 0; j < numValues; j++)
 		{
 			rowcol >> tok;
 			tmp[tok] = j;
+			tmpRev[j] = tok;
 		}
 		strmap.push_back(tmp);
+		reverse.push_back(tmpRev);
 		// for (auto elem: tmp)
 		// {
 		// 	cout << elem.first << ": " << elem.second << "  ";
@@ -94,7 +98,7 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 	istringstream rowcol(line);
 	rowcol >> rows;
 
-	printf("rows: %d, cols: %d\n",rows, cols );
+	// printf("rows: %d, cols: %d\n",rows, cols );
 
 	int xArrCount = 0;
 	initArr();
@@ -128,6 +132,9 @@ void Readfile::readData(string passedFile, Matrix &x, int &k)
 	x = new Matrix(rows, cols, xArr, "x");
 	// x.print();
 	deleteArr();
+
+	names = features;
+	mp = reverse;
 	// for (auto m : features)
 	// {
 	// 	cout << m << endl;

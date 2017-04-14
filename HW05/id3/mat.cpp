@@ -1,4 +1,4 @@
-// // // // // // // // // // // // // // // // 
+// // // // // // // // // // // // // // // //
 //
 // Some simple matrix operators
 //
@@ -605,7 +605,7 @@ Matrix &Matrix::extract(int minr, int minc, int sizer, int sizec, Matrix &out)
 Matrix &Matrix::insert(const Matrix &other, int minr, int minc)
 {
     assertIndexOK(minr, minc, "insert");
-    
+
     for (int r=0; r<other.maxr; r++) {
         if (r>=maxr) break;
         for (int c=0; c<other.maxc; c++) {
@@ -1205,7 +1205,7 @@ Matrix &Matrix::divRowVector(const Matrix &other)
             }
             exit(1);
         }
-        
+
         for (int r=0; r<maxr; r++) {
             m[r][c] /= other.m[0][c];
         }
@@ -1400,7 +1400,7 @@ Matrix Matrix::pickRows(int match, const Matrix &list, int &num)
             if (list.m[r][0]==match) {
                 for (int c=0; c<maxc; c++) {
                     out.m[rr][c] = m[r][c];
-                }       
+                }
                 rr++;
                 if (rr>=num) break;
             }
@@ -1587,7 +1587,7 @@ Matrix Matrix::cov()
 
     out.defined = true;
     delete [] mean;
-    
+
     return out;
 }
 
@@ -1768,7 +1768,7 @@ Matrix &Matrix::mapIndex(double (*f)(int r, int c, double x))
 Matrix &Matrix::constant(double x)
 {
     assertUsableSize("constant");
-    
+
     for (int r=0; r<maxr; r++) {
         for (int c=0; c<maxc; c++) {
             m[r][c] = x;
@@ -1933,7 +1933,7 @@ Matrix &Matrix::transposeSelf()
     // handle non-square matrix with reallocation
     else {
         double **newm;
-        
+
         newm = new double * [maxc];
         for (int i=0; i<maxc; i++) newm[i] = new double [maxr];
 
@@ -1942,7 +1942,7 @@ Matrix &Matrix::transposeSelf()
                 newm[c][r] = m[r][c];
             }
         }
-        
+
         deallocate();  // deallocate AFTER copying
 
         { int tmp; tmp = maxr; maxr = maxc; maxc = tmp; }
@@ -2222,7 +2222,7 @@ void isort(double a[], double *b[], int len)
     for (int i=1; i<len; i++) {
         double aa, *bb;
         int j;
-        
+
         aa = a[i];
         bb = b[i];
         for (j = i-1; (j>=0) && (fabs(a[j])<fabs(aa)); j--) {
@@ -2239,7 +2239,7 @@ Matrix Matrix::eigenSystem()
 {
     assertDefined("eigenSystem");
     assertSquare("eigenSystem");
-    
+
     Matrix values(1, maxc);   // allocates space for eigen values
 
     {
@@ -2582,7 +2582,7 @@ static bool gaussj(double **a, int n, double **b, int m)
 void Matrix::selectSort(int lower, int upper)
 {
     int bestLoc;
-    
+
     for (int l=lower; l<upper; l++) {
         bestLoc = l;
         for (int u=l+1; u<=upper; u++) {
@@ -2611,7 +2611,7 @@ void Matrix::qs(int lower, int upper)
             swapRows(save, ptr);
             save++;
         }
-    }    
+    }
 
     swapRows(upper, save);
 
@@ -2650,7 +2650,7 @@ Matrix Matrix::subMatrix(int minr, int minc, int sizer, int sizec) const
     out.defined = true;
 
     return out;
-}    
+}
 
 
 
@@ -2660,7 +2660,7 @@ Matrix Matrix::subMatrix(int minr, int minc, int sizer, int sizec) const
 // If you want this matrix to persist then you have to make a full copy of it.
 Matrix Matrix::subMatrixEq(int c, double value) const
 {
-    checkBounds(0, c, "subMatrixEq");
+    // checkBounds(0, c, "subMatrixEq");
 
     std::vector<double *> rowList;        // this is a retrofit of using an array originally when vector better
 
@@ -2670,7 +2670,7 @@ Matrix Matrix::subMatrixEq(int c, double value) const
 
     Matrix out(rowList.size());                         // allocate a subMatrix!
     out.maxc = maxc;
-    
+
     for (unsigned int r=0; r<rowList.size(); r++) {
         out.m[r] = rowList[r];                          // DANGER: we are copying pointers into other Matrix!!!
     }
@@ -2678,7 +2678,7 @@ Matrix Matrix::subMatrixEq(int c, double value) const
     out.defined = true;
 
     return out;
-}    
+}
 
 
 Matrix Matrix::subMatrixNeq(int c, double value) const
@@ -2693,7 +2693,7 @@ Matrix Matrix::subMatrixNeq(int c, double value) const
 
     Matrix out(rowList.size());                         // allocate a subMatrix!
     out.maxc = maxc;
-    
+
     for (unsigned int r=0; r<rowList.size(); r++) {
         out.m[r] = rowList[r];                          // DANGER: we are copying pointers into other Matrix!!!
     }
@@ -2701,10 +2701,10 @@ Matrix Matrix::subMatrixNeq(int c, double value) const
     out.defined = true;
 
     return out;
-}    
+}
 
 
-// // // // // // // // // // // // // // // // // // // // // // // // 
+// // // // // // // // // // // // // // // // // // // // // // // //
 //
 // Some random tests for the matrix code
 //
@@ -2746,7 +2746,7 @@ int main()
 //    z.print(); // undefined
 //    x.print("matrix x");  // undefined
 //    y.dot(y);   // wrong sizes
-    
+
     printf("Supply a 3x3 or larger matrix to read:\n");
     x.read();
 
@@ -2933,4 +2933,3 @@ int main()
     return 0;
 }
 */
-
